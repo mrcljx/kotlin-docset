@@ -1,0 +1,23 @@
+#!/bin/bash
+set -euo pipefail
+IFS=$'\n\t'
+
+mkdir -p _input
+cd _input
+
+FILES=(
+  "js/page/reference.js"
+  "js/vendor/jquery/jquery-1.11.0.min.js"
+  "js/com/nav-tree.js"
+  "js/util/render.js"
+  "js/util/localStorage.js"
+)
+
+for f in ${FILES[@]}
+do
+  dir=`dirname $f`
+  mkdir -p $dir
+  wget -O $f http://kotlinlang.org/$f
+done
+
+wget --mirror -k -nH http://kotlinlang.org/docs/reference/

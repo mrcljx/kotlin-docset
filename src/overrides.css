@@ -1,0 +1,15 @@
+/*
+  Dash DocSet Overrides
+*/
+
+article, .g-layout {
+  width: auto !important;
+}
+
+.g-layout {
+  padding: 20px !important;
+}
+
+header, footer, aside, nav, .global-layout:after, .page-link-to-github {
+  display: none !important;
+}

@@ -1,0 +1,26 @@
+#!/bin/bash
+set -euo pipefail
+IFS=$'\n\t'
+
+ROOT=_output/Kotlin.docset
+RESOURCES=$ROOT/Contents/Resources
+
+rm -rf $ROOT
+mkdir -p $RESOURCES
+
+cp src/Info.plist $ROOT/Contents/
+cp -r _input $RESOURCES/Documents
+cat src/overrides.css >> $RESOURCES/Documents/css/styles.css
+convert _input/assets/images/favicon.ico $ROOT/icon.png
+
+pushd _input
+find . -name \*\.html | xargs -n 1 ruby ../src/index.rb | sqlite3 ../$RESOURCES/docSet.dsidx
+popd
+
+cd _output
+tar \
+  --exclude 'tutorials.*' \
+  --exclude 'apple-touch-*.png' \
+  --exclude='.DS_Store' \
+  -cvzf Kotlin.tgz \
+  Kotlin.docset
