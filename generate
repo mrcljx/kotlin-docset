@@ -17,8 +17,10 @@ convert src/icon.png -resize 16x16 _tmp/icon.png
 convert src/icon.png -resize 32x32 _tmp/icon@2x.png
 tiffutil -cathidpicheck _tmp/icon.png _tmp/icon@2x.png -out $ROOT/icon.tiff
 
+cat src/setup.sql | sqlite3 $RESOURCES/docSet.dsidx
+
 pushd _input
-find . -name \*\.html | xargs -n 1 ruby ../src/index.rb | sqlite3 ../$RESOURCES/docSet.dsidx
+find . -name \*\.html | xargs -n1 -P4 ruby ../src/index.rb | sqlite3 ../$RESOURCES/docSet.dsidx
 popd
 
 cd _output

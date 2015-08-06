@@ -21,3 +21,6 @@ do
 done
 
 wget --mirror -k -nH http://kotlinlang.org/docs/reference/
+
+wget -O - https://github.com/JetBrains/kotlin/archive/gh-pages.zip | bsdtar -xvf-
+mv kotlin-gh-pages _javadoc
