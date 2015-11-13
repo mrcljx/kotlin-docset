@@ -1,0 +1,29 @@
+#!/bin/bash
+set -euo pipefail
+IFS=$'\n\t'
+
+if ! hash wget 2>/dev/null; then
+  echo "Couldn't find dependency: wget"
+
+  if [[ "$OSTYPE" == "darwin"* ]]; then
+    if ! hash brew 2>/dev/null; then
+      echo "Please install homebrew from http://brew.sh/"
+      exit 1
+    fi
+  fi
+
+  read -p "Install wget now? [y/N] " -n 1 -r
+  echo
+
+  if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+    echo "Exiting..."
+    exit 1
+  fi
+
+  echo "Installing wget..."
+  ./pacapt -S wget
+
+  echo "Generating..."
+fi
+
+./fetch && ./generate

@@ -9,8 +9,11 @@ containing the documentation for [Kotlin](http://kotlinlang.org).
 
 ## Building the Docset
 
-Just run `./fetch && ./generate` to download and build everything.
-The generated `Kotlin.docset` will be in the `_output` folder.
+The following command generates `Kotlin.docset` in the `_output` folder.
+
+```
+./run
+```
 
 ## License
 
