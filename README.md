@@ -7,3 +7,7 @@ containing the documentation for [Kotlin](http://kotlinlang.org).
 
 Just run `./fetch && ./generate` to download and build everything.
 The generated `Kotlin.docset` will be in the `_output` folder.
+
+## License
+
+This project is licensed under the terms of the MIT license. See the LICENSE file.
