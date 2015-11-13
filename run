@@ -2,9 +2,7 @@
 set -euo pipefail
 IFS=$'\n\t'
 
-if ! hash wget 2>/dev/null; then
-  echo "Couldn't find dependency: wget"
-
+install() {
   if [[ "$OSTYPE" == "darwin"* ]]; then
     if ! hash brew 2>/dev/null; then
       echo "Please install homebrew from http://brew.sh/"
@@ -12,7 +10,7 @@ if ! hash wget 2>/dev/null; then
     fi
   fi
 
-  read -p "Install wget now? [y/N] " -n 1 -r
+  read -p "Install $1 now? [y/N] " -n 1 -r
   echo
 
   if [[ ! $REPLY =~ ^[Yy]$ ]]; then
@@ -20,10 +18,18 @@ if ! hash wget 2>/dev/null; then
     exit 1
   fi
 
-  echo "Installing wget..."
-  ./pacapt -S wget
+  echo "Installing $1..."
+  ./pacapt -S $1
+}
 
-  echo "Generating..."
-fi
+check() {
+  if ! hash $1 2>/dev/null; then
+    echo "Couldn't find dependency: $1"
+    install ${2:-$1}
+  fi
+}
+
+check wget
+check convert imagemagick
 
 ./fetch && ./generate
