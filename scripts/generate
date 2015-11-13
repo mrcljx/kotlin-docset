@@ -13,9 +13,12 @@ cp -r _input $RESOURCES/Documents
 cat src/overrides.css >> $RESOURCES/Documents/css/styles.css
 
 mkdir -p _tmp
-convert src/icon.png -resize 16x16 _tmp/icon.png
-convert src/icon.png -resize 32x32 _tmp/icon@2x.png
-tiffutil -cathidpicheck _tmp/icon.png _tmp/icon@2x.png -out $ROOT/icon.tiff
+
+if hash tiffutil 2>/dev/null; then
+  convert src/icon.png -resize 16x16 _tmp/icon.png
+  convert src/icon.png -resize 32x32 _tmp/icon@2x.png
+  tiffutil -cathidpicheck _tmp/icon.png _tmp/icon@2x.png -out $ROOT/icon.tiff
+fi
 
 cat src/setup.sql | sqlite3 $RESOURCES/docSet.dsidx
 
@@ -23,10 +26,17 @@ pushd _input
 find . -name \*\.html | xargs -n1 -P4 ruby ../src/index.rb | sqlite3 ../$RESOURCES/docSet.dsidx
 popd
 
-cd _output
+pushd _output
 tar \
   --exclude 'tutorials.*' \
   --exclude 'apple-touch-*.png' \
   --exclude='.DS_Store' \
   -cvzf Kotlin.tgz \
   Kotlin.docset
+popd
+
+if [ ! -f $ROOT/icon.tiff ]; then
+  echo "Warning: Couldn't generate icon.tiff for retina display support!"
+  echo "Do NOT submit this to https://github.com/Kapeli/Dash-User-Contributions"
+  exit 1
+fi
