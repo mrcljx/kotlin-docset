@@ -32,4 +32,4 @@ check() {
 check wget
 check convert imagemagick
 
-./fetch && ./generate
+./scripts/fetch && ./scripts/generate
