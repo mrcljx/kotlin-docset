@@ -5,9 +5,16 @@ containing the documentation for [Kotlin](http://kotlinlang.org).
 
 ## Prerequisites
 
-- `wget` (install via Homebrew)
-- `imagemagick` (install via Homebrew)
-- `tiffutil` (part of OS X)
+This docset only builds on *Mac OS X*, since it requires `tiffutil`.
+
+Install via *Homebrew* (`brew install ...`):
+
+- `wget`
+- `imagemagick`
+
+Install via *RubyGems* (`gem install ...`):
+
+- `nokogiri`
 
 ## Building the Docset
 
