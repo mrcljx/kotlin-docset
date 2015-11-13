@@ -2,20 +2,22 @@
 set -euo pipefail
 IFS=$'\n\t'
 
-install() {
-  if [[ "$OSTYPE" == "darwin"* ]]; then
-    if ! hash brew 2>/dev/null; then
-      echo "Please install homebrew from http://brew.sh/"
-      exit 1
-    fi
-  fi
-
-  read -p "Install $1 now? [y/N] " -n 1 -r
+ask() {
+  read -p "Install '$1' now? [y/N] " -n 1 -r
   echo
 
   if [[ ! $REPLY =~ ^[Yy]$ ]]; then
     echo "Exiting..."
     exit 1
+  fi
+}
+
+install() {
+  if [[ "$OSTYPE" == "darwin"* ]]; then
+    if ! hash brew 2>/dev/null; then
+      echo "Please install homebrew from http://brew.sh/ first"
+      exit 1
+    fi
   fi
 
   echo "Installing $1..."
@@ -25,11 +27,29 @@ install() {
 check() {
   if ! hash $1 2>/dev/null; then
     echo "Couldn't find dependency: $1"
+    ask ${2:-$1}
     install ${2:-$1}
+  fi
+}
+
+install_gem() {
+  echo "Installing ruby gem '$1'..."
+  if ! gem install $1; then
+    echo "Installing ruby gem '$1' failed... Try: sudo gem install $1"
+    exit 1
+  fi
+}
+
+check_gem() {
+  if ! ruby -e "require '$1'" 2>/dev/null; then
+    echo "Couldn't find ruby gem dependency: $1"
+    ask ${2:-$1}
+    install_gem ${2:-$1}
   fi
 }
 
 check wget
 check convert imagemagick
+check_gem nokogiri
 
 ./scripts/fetch && ./scripts/generate
