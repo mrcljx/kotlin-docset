@@ -7,7 +7,7 @@ cd _input
 
 FILES=(
   "js/page/reference.js"
-  "js/vendor/jquery/jquery-1.11.0.min.js"
+  "js/vendor/jquery/jquery-1.12.4.min.js"
   "js/com/nav-tree.js"
   "js/util/render.js"
   "js/util/localStorage.js"
