@@ -1,61 +1,76 @@
+# rubocop:disable Metrics/AbcSize
+# rubocop:disable Metrics/LineLength
+# rubocop:disable Metrics/MethodLength
+# rubocop:disable Metrics/CyclomaticComplexity
 require 'bundler'
 Bundler.require
 
-file_name = ARGV.first
-
-$stderr.print "Processing #{file_name}"
-
-doc = Nokogiri::HTML(ARGF.read)
-
-title = doc.css('head > title').first.content
-type = 'Guide'
-
-if title.start_with? 'stdlib /'
-  parts = title.gsub('stdlib / ', '').split('.')
-
-  article = doc.css('article[role=main]').first
-
-  title_node = article.css('h1').first
-
-  if title_node
-    title = title_node.content
-    meta = article.css('code').first.content
-  else
-    title = parts.last
-    meta = ''
-  end
-
-  if title == '<init>'
-    type = 'Constructor'
-    title = parts[-1]
-  elsif meta.include? ' annotation class '
-    type = 'Annotation'
-  elsif meta.include? ' enum class '
-    type = 'Enum'
-  elsif meta.include? ' class '
-    type =
-      if meta.end_with? 'Exception'
-        'Exception'
-      else
-        'Class'
-      end
-  elsif meta.include? ' interface '
-    type = 'Interface'
-  elsif meta.include? ' object '
-    type = 'Object'
-  elsif meta.include? ' fun '
-    type = 'Method'
-  elsif meta.include? ' var '
-    type = 'Property'
-  elsif meta.include? ' val '
-    type = 'Property'
-  elsif /^[A-Z0-9_]+$/ =~ title
-    type = 'Element' # enum element
-  else
-    $stderr.print ' ???'
+# Object.try from Rails
+class Object
+  def try(*a, &b)
+    if a.empty? && block_given?
+      yield self
+    elsif !nil?
+      __send__(*a, &b)
+    end
   end
 end
 
-$stderr.puts " --> #{type.upcase} #{title}"
+# Extracts info from page
+class Parser
+  def initialize
+    @file_name = ARGV.first
+  end
 
-puts "INSERT INTO searchIndex VALUES (NULL, '#{title}', '#{type}', '#{file_name}');"
+  attr_reader :file_name
+
+  def doc
+    @doc ||= Nokogiri::HTML(ARGF.read)
+  end
+
+  def title
+    @title ||= (doc.css('article[role=main] h1').first.try(:content) || '').strip
+  end
+
+  def meta
+    @meta ||= (doc.css('article[role=main] .signature code').first.try(:content) || '').strip
+  end
+
+  def type
+    @type ||= begin
+      return 'Constructor' if title == '<init>'
+      case meta
+      when /\bannotation class\b/ then 'Annotation'
+      when /\benum class\b/ then 'Enum'
+      when /\bclass\b/ then meta.end_with?('Exception') ? 'Exception' : 'Class'
+      when /\binterface\b/ then 'Interface'
+      when /\bobject\b/ then 'Object'
+      when /\btypealias\b/ then 'Type'
+      when /\bfun\b/ then 'Method'
+      when /\bva[rl]\b/ then 'Property'
+      else
+        'Element' if /^[A-Z0-9_]+$/ =~ title
+      end
+    end || 'Guide'
+  end
+
+  def url
+    "https://kotlinlang.org/#{file_name[2..-1]}"
+  end
+
+  def to_sql
+    if title.empty?
+      $stderr.puts [url, 'SKIPPED', ' '].join("\n")
+    else
+      result = "#{type.upcase} | #{title}"
+      $stderr.puts [url, meta, result, ' '].join("\n")
+      "INSERT INTO searchIndex VALUES (NULL, '#{title}', '#{type}', '#{file_name}');"
+    end
+  rescue
+    $stderr.puts "Processing #{url} --> ERROR"
+    raise
+  end
+end
+
+parser = Parser.new
+puts parser.to_sql

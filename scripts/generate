@@ -10,7 +10,8 @@ mkdir -p $RESOURCES
 
 cp src/Info.plist $ROOT/Contents/
 cp -r _input $RESOURCES/Documents
-cat src/overrides.css >> $RESOURCES/Documents/css/styles.css
+cat src/overrides.css >> $RESOURCES/Documents/_assets/styles.css
+cat src/overrides.css >> $RESOURCES/Documents/_assets/common.css
 
 mkdir -p _tmp
 

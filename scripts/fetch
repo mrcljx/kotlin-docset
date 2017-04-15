@@ -6,11 +6,10 @@ mkdir -p _input
 cd _input
 
 FILES=(
-  "js/page/reference.js"
-  "js/vendor/jquery/jquery-1.11.0.min.js"
-  "js/com/nav-tree.js"
-  "js/util/render.js"
-  "js/util/localStorage.js"
+  "_assets/default.js"
+  "_assets/common.js"
+  "_assets/common.css"
+  "_assets/styles.css"
 )
 
 for f in ${FILES[@]}
