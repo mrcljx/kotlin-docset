@@ -12,7 +12,7 @@ Install via *Homebrew* (`brew install ...`):
 - `wget`
 - `imagemagick`
 
-Install via *RubyGems* (`gem install ...`):
+Install via *Bundler* (`bundle install`):
 
 - `nokogiri`
 
