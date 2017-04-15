@@ -1,4 +1,5 @@
-require 'nokogiri'
+require 'bundler'
+Bundler.require
 
 file_name = ARGV.first
 

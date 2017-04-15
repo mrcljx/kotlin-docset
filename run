@@ -50,6 +50,7 @@ check_gem() {
 
 check wget
 check convert imagemagick
-check_gem nokogiri
+check_gem bundler
+bundle install
 
 ./scripts/fetch && ./scripts/generate
