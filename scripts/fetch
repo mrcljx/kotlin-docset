@@ -20,7 +20,7 @@ do
 done
 
 set +e
-wget --mirror --reject-regex 'api/latest/jvm/stdlib/org' -k -nH http://kotlinlang.org/docs/reference/
+wget --mirror -k -nH http://kotlinlang.org/docs/reference/
 wget_status=$?
 set -e
 
