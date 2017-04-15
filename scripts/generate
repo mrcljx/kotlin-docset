@@ -28,6 +28,9 @@ find . -name \*\.html | xargs -n1 -P4 ruby ../src/index.rb | sqlite3 ../$RESOURC
 popd
 
 pushd _output
+
+rm -f Kotlin.tgz
+
 tar \
   --exclude 'tutorials.*' \
   --exclude 'apple-touch-*.png' \
