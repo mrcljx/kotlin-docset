@@ -19,7 +19,7 @@ do
   wget -O $f http://kotlinlang.org/$f
 done
 
-wget --mirror -k -nH http://kotlinlang.org/docs/reference/
+wget --mirror --reject-regex 'api/latest/jvm/stdlib/org' -k -nH http://kotlinlang.org/docs/reference/
 
 wget -O - https://github.com/JetBrains/kotlin/archive/gh-pages.zip | bsdtar -xvf-
 mv kotlin-gh-pages _javadoc
