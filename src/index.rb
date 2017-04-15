@@ -10,8 +10,7 @@ doc = Nokogiri::HTML(ARGF.read)
 title = doc.css('head > title').first.content
 type = 'Guide'
 
-if title.start_with? "stdlib /"
-  original_title = title
+if title.start_with? 'stdlib /'
   parts = title.gsub('stdlib / ', '').split('.')
 
   article = doc.css('article[role=main]').first
@@ -34,11 +33,12 @@ if title.start_with? "stdlib /"
   elsif meta.include? ' enum class '
     type = 'Enum'
   elsif meta.include? ' class '
-    if meta.end_with? 'Exception'
-      type = 'Exception'
-    else
-      type = 'Class'
-    end
+    type =
+      if meta.end_with? 'Exception'
+        'Exception'
+      else
+        'Class'
+      end
   elsif meta.include? ' interface '
     type = 'Interface'
   elsif meta.include? ' object '
@@ -49,7 +49,7 @@ if title.start_with? "stdlib /"
     type = 'Property'
   elsif meta.include? ' val '
     type = 'Property'
-  elsif /^[A-Z0-9_]+$/.match(title)
+  elsif /^[A-Z0-9_]+$/ =~ title
     type = 'Element' # enum element
   else
     $stderr.print ' ???'
